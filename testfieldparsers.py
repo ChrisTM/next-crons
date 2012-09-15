@@ -101,5 +101,11 @@ class TestDaysOfWeekParser(unittest.TestCase):
         self.parse = DaysOfWeekParser().parse
 
     def testNames(self):
-        self.assertEqual(self.parse('mon-wed'), [1,2,3,4,5])
+        self.assertEqual(self.parse('mon-wed'), [1,2,3])
+
+class TestMonthsParser(unittest.TestCase):
+    def setUp(self):
+        self.parse = MonthsParser().parse
+
+    def testNames(self):
         self.assertEqual(self.parse('feb-oct/2'), [2,4,6,8,10])

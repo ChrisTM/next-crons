@@ -99,7 +99,7 @@ class GenericParser(object):
         elif self.is_range(sub_exp):
             vals = self.parse_range(sub_exp)
         else:
-            raise SyntaxError("LHS of skip expression {0} is invalid" % (exp))
+            raise SyntaxError("LHS of skip expression {0} is invalid".format(exp))
 
         # return `vals`, skipping every `skip_num`-indexed value
         return [val for idx, val in enumerate(vals) if idx % skip_num == 0]
@@ -127,7 +127,8 @@ class GenericParser(object):
         try:
             return int(num_exp)
         except ValueError:
-            raise ValueError('{0} is not a valid number or name' % (num_exp))
+            print num_exp
+            raise ValueError('{0} is not a valid number or name'.format(num_exp))
 
 
 class MinutesParser(GenericParser):
