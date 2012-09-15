@@ -21,7 +21,7 @@ class TestGenericParser(unittest.TestCase):
 
     def test_is_range(self):
         self.assertTrue(self.parser.is_range('5-7'))
-        self.assertTrue(self.parser.is_range('5-7-9'))
+        self.assertFalse(self.parser.is_range('5-7-9'))
         self.assertFalse(self.parser.is_range('5-'))
 
     def test_is_skip(self):

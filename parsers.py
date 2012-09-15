@@ -62,7 +62,7 @@ class GenericParser(object):
 
     """Return True if `exp` a range-type expression. Does not check bounds."""
     def is_range(self, exp):
-        return re.match(r'(\d+)-(\d+)', exp) is not None;
+        return re.match(r'^(\d+)-(\d+)$', exp) is not None;
 
     """Return list of values matched by `exp`"""
     def parse_range(self, exp):
@@ -76,7 +76,7 @@ class GenericParser(object):
     ensure the LHS of '/' is a valid expression itself.
     """
     def is_skip(self, exp):
-        return re.match(r'(.*)/(\d+)', exp) is not None;
+        return re.match(r'^(.*)/(\d+)$', exp) is not None;
 
     """Return list of values matched by `exp`"""
     def parse_skip(self, exp):
