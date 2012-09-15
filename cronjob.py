@@ -3,42 +3,6 @@ from datetime import datetime, timedelta
 
 from fieldparsers import Parse
 
-nicknames = {
-    '@yearly':   "0 0 1 1 *",
-    '@annually': "0 0 1 1 *",
-    '@monthly':  "0 0 1 * *",
-    '@weekly':   "0 0 * * 0",
-    '@daily':    "0 0 * * *",
-    '@hourly':   "0 * * * *",
-}
-
-def step_month(dt):
-    # a month is not always the same duration, so we cannot just add a
-    # timedelta
-    month = (dt.month % 12) + 1
-    dt = dt.replace(month=month, day=0, hour=0, minute=0)
-
-    # if the months wrapped around to jan, the year also needs to increment
-    if month == 1:
-        next_year = dt.year + 1
-        dt = dt.replace(year=next_year)
-
-    return dt
-
-def step_day(dt):
-    dt += timedelta(days=1)
-    dt = dt.replace(hour=0, minute=0)
-    return dt
-
-def step_hour(dt):
-    dt += timedelta(hours=1)
-    dt = dt.replace(minute=0)
-    return dt
-
-def step_minute(dt):
-    dt += timedelta(minutes=1)
-    return dt
-
 class CronJob(object):
     def __init__(self, line):
         # matches five fields separated by whitespace and then everything else
@@ -115,3 +79,30 @@ class CronJob(object):
         while True:
             now = self.next_time(now)
             yield now
+
+def step_month(dt):
+    # a month is not always the same duration, so we cannot just add a
+    # timedelta
+    month = (dt.month % 12) + 1
+    dt = dt.replace(month=month, day=0, hour=0, minute=0)
+
+    # if the months wrapped around to jan, the year also needs to increment
+    if month == 1:
+        next_year = dt.year + 1
+        dt = dt.replace(year=next_year)
+
+    return dt
+
+def step_day(dt):
+    dt += timedelta(days=1)
+    dt = dt.replace(hour=0, minute=0)
+    return dt
+
+def step_hour(dt):
+    dt += timedelta(hours=1)
+    dt = dt.replace(minute=0)
+    return dt
+
+def step_minute(dt):
+    dt += timedelta(minutes=1)
+    return dt

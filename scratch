@@ -1,12 +1,18 @@
 TODO
 ====
-  * nicknames (@weekly, etc)
+  * nicknames
+        nicknames = {
+            '@yearly':   "0 0 1 1 *",
+            '@annually': "0 0 1 1 *",
+            '@monthly':  "0 0 1 * *",
+            '@weekly':   "0 0 * * 0",
+            '@daily':    "0 0 * * *",
+            '@hourly':   "0 * * * *",
+        }
   * proper packaging (__init__, __all__, etc)
   * type up my cron grammar production assumptions
-  * dedupe cronjob regex in cronjob.py and crontab.py
 
 Notes
 =====
-
 Apparently, names aren't allowed to be used in lists or in ranges (ISC Cron
 V4.1)! So be careful; right now, my implementation allows that.
