@@ -17,8 +17,16 @@ string and expands it into a list of numbers that are matched by the field.
 Example: .parse("2-4,9") -> [2,3,4,9].
 """
 class GenericParser(object):
+    # if `_min` and `_max` are specified, they will be used to determine the
+    # `allowed_vals`
     _min = None
     _max = None
+
+    # mapping of lowercase alphabetical aliases to their integer meaning.
+    # Eg: {..., 'feb': 2, ...}
+    aliases = {}
+
+    # list of all allowed values for this field
     allowed_vals = AllValues()
 
     def __init__(self):
@@ -52,7 +60,7 @@ class GenericParser(object):
     def is_all(self, exp):
         return exp == '*'
 
-    """Return list of values matched by `exp`"""
+    """Return list of values matched by `*`"""
     def parse_all(self, exp):
         if isinstance(self.allowed_vals, AllValues):
             raise SyntaxError("This field does not support use of '*'")
@@ -60,14 +68,15 @@ class GenericParser(object):
             return self.allowed_vals
 
 
-    """Return True if `exp` a range-type expression. Does not check bounds."""
+    """Return True if `exp` is a range-type expression. Does not check bounds."""
     def is_range(self, exp):
-        return re.match(r'^(\d+)-(\d+)$', exp) is not None;
+        return re.match(r'^(\w+)-(\w+)$', exp) is not None;
 
     """Return list of values matched by `exp`"""
     def parse_range(self, exp):
-        _min, _max = map(int, exp.split('-'));
-        assert (min in self.allowed_vals and _max + 1 in self.allowed_vals)
+        _min, _max = map(self.parse_number, exp.split('-'));
+        assert (_min in self.allowed_vals and _max + 1 in self.allowed_vals)
+        assert (_min <= _max)
         return range(_min, _max + 1)
 
 
@@ -98,13 +107,27 @@ class GenericParser(object):
 
     """Return True if `exp` a single-number expression. Does not check bounds."""
     def is_single(self, exp):
-        return re.match(r'^(\d+)$', exp) is not None;
+        return re.match(r'^(\w+)$', exp) is not None;
 
     """Return list of the single value matched by the number `exp`"""
     def parse_single(self, exp):
-        assert (int(exp) in self.allowed_vals)
-        return [int(exp)]
+        assert (self.parse_number(exp) in self.allowed_vals)
+        return [self.parse_number(exp)]
 
+    """
+    Given a fragment representing a number (either as an alphanumeric alias or
+    otherwise), return the matching integer. This is not a field expression
+    parser, but a parser for the parts of an expression that represent a
+    number.
+    """
+    def parse_number(self, num_exp):
+        lowered = num_exp.lower()
+        if lowered in self.aliases:
+            return self.aliases[lowered]
+        try:
+            return int(num_exp)
+        except ValueError:
+            raise ValueError('{0} is not a valid number or number alias' % (num_exp))
 
 
 class MinutesParser(GenericParser):
@@ -148,6 +171,7 @@ class DaysOfWeekParser(GenericParser):
         'thu': 4,
         'fri': 5,
         'sat': 6,
+        '7': 0, #ATTN: 7, 0 both mean Sunday
     }
 
 

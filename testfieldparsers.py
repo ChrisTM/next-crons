@@ -83,3 +83,20 @@ class TestGenericParser(unittest.TestCase):
         field = '9-12,6-7'
         exp = [6,7,9,10,11,12]
         self.assertEqual(exp, self.parser.parse(field))
+
+class TestMonthsParser(unittest.TestCase):
+    def setUp(self):
+        self.parse = MonthsParser().parse
+
+    def testAll(self):
+        self.assertEqual(self.parse('*'), range(1,13))
+
+    def testAliases(self):
+        self.assertEqual(self.parse('jan-may'), [1,2,3,4,5])
+        self.assertEqual(self.parse('JAN-MAY'), [1,2,3,4,5])
+        self.assertEqual(self.parse('feb-oct/2'), [2,4,6,8,10])
+
+class TestDaysOfWeekParser(unittest.TestCase):
+    def setUp(self):
+        self.parse = DaysOfWeekParser().parse
+

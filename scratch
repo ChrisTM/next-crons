@@ -1,0 +1,5 @@
+Notes
+=====
+
+Apparently, names aren't allowed to be used in lists or in ranges (ISC Cron
+V4.1)! So be careful; right now, my implementation allows that.
