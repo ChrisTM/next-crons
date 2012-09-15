@@ -1,5 +1,5 @@
 import re
-from parsers import Parse
+from fieldparsers import Parse
 
 nicknames = {
     '@yearly':   "0 0 1 1 *",

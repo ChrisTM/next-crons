@@ -1,5 +1,5 @@
 import unittest
-from parsers import *
+from fieldparsers import *
 
 class TestGenericParser(unittest.TestCase):
     def setUp(self):
