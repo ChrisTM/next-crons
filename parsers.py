@@ -22,7 +22,7 @@ class GenericParser(object):
     allowed_vals = AllValues()
 
     def __init__(self):
-        if self._min and self._max:
+        if None not in (self._min, self._max):
             self.allowed_vals = range(self._min, self._max + 1)
 
     """Parse a field, returning a list of values allowed by the field"""
@@ -107,19 +107,19 @@ class GenericParser(object):
 
 
 
-class Minutes(GenericParser):
+class MinutesParser(GenericParser):
     _min = 0
     _max = 59
 
-class Hours(GenericParser):
+class HoursParser(GenericParser):
     _min = 0
     _max = 23
 
-class DaysOfMonth(GenericParser):
+class DaysOfMonthParser(GenericParser):
     _min = 1
     _max = 31
 
-class Months(GenericParser):
+class MonthsParser(GenericParser):
     _min = 1
     _max = 12
     aliases = { 
@@ -137,9 +137,9 @@ class Months(GenericParser):
         'dec': 12,
     }
 
-class DaysOfWeek(GenericParser):
+class DaysOfWeekParser(GenericParser):
     _min = 0
-    _max = 7
+    _max = 6
     aliases = { 
         'sun': 0,
         'mon': 1,
@@ -151,8 +151,10 @@ class DaysOfWeek(GenericParser):
     }
 
 
-parse_minutes = Minutes().parse
-parse_hours = Hours().parse
-parse_days_of_month = DaysOfMonth().parse
-parse_months = Months().parse
-parse_days_of_week = DaysOfWeek().parse
+"""A convienence class that namespaces instances of the typed parsers"""
+class Parse:
+    minutes = MinutesParser().parse
+    hours = HoursParser().parse
+    days_of_month = DaysOfMonthParser().parse
+    months = MonthsParser().parse
+    days_of_week = DaysOfWeekParser().parse

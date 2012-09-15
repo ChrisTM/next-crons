@@ -59,3 +59,27 @@ class TestGenericParser(unittest.TestCase):
 
         obs_fn = lambda: self.parser.parse_skip('*/2');
         self.assertRaises(SyntaxError, obs_fn)
+
+
+    # test parse method
+
+    def test_parse(self):
+        field = '5-8'
+        exp = [5,6,7,8]
+        self.assertEqual(exp, self.parser.parse(field))
+
+        field = '3-10/3'
+        exp = [3,6,9]
+        self.assertEqual(exp, self.parser.parse(field))
+
+        field = '12'
+        exp = [12]
+        self.assertEqual(exp, self.parser.parse(field))
+
+        field = '6-8,2,3,4'
+        exp = [2,3,4,6,7,8]
+        self.assertEqual(exp, self.parser.parse(field))
+
+        field = '9-12,6-7'
+        exp = [6,7,9,10,11,12]
+        self.assertEqual(exp, self.parser.parse(field))
