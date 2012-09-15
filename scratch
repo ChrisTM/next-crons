@@ -1,3 +1,10 @@
+TODO
+====
+  * nicknames (@weekly, etc)
+  * proper packaging (__init__, __all__, etc)
+  * type up my cron grammar production assumptions
+  * dedupe cronjob regex in cronjob.py and crontab.py
+
 Notes
 =====
 

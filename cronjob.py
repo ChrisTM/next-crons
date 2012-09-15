@@ -39,12 +39,17 @@ def step_minute(dt):
     dt += timedelta(minutes=1)
     return dt
 
-
 class CronJob(object):
     def __init__(self, line):
         # matches five fields separated by whitespace and then everything else
         # (the command)
-        match = re.match(r'^(\S*)\s+(\S*)\s+(\S*)\s+(\S*)\s+(\S*)\s+(.*)$', line);
+        field = r'([\w\d,*/-]+)' # one or more alpha, digit, *, /, -
+        whitespace = r'\s+' # one or more whitespace (separates fields)
+        command = r'(.*)' # everything else goes to the command
+        regex = '^' + (field + whitespace) * 5 + command + '$'
+        match = re.match(regex, line);
+        if match is None:
+            raise ValueError('The line {0} does not look line a cronjob.'.format(line));
 
         self.minutes = Parse.minutes(match.group(1))
         self.hours = Parse.hours(match.group(2))
@@ -71,7 +76,7 @@ class CronJob(object):
 
     """
     Return the datetime object for when this cronjob will next fire
-    
+
     Approach: we'll use a greedy brute-force approach. We start with a time
     value set to `now`, then repeatedly increment the time with the largest
     steps we can (month, day, hour, then minute) until we get a
@@ -110,8 +115,3 @@ class CronJob(object):
         while True:
             now = self.next_time(now)
             yield now
-
-
-if __name__ == '__main__':
-    c = CronJob('* * * * * awesome-command somefilename');
-    print c.minutes, c.hours, c.days_of_month, c.months, c.days_of_week
