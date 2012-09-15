@@ -31,7 +31,7 @@ class TestCronJob(unittest.TestCase):
     def test_next_time(self):
         job = CronJob('*/10 * * * * command')
 
-        now =      datetime(2012, 10, 19, 8,  5);  # 8:05am
+        now =      datetime(2012, 10, 19, 8,  5); # 8:05am
         exp_next = datetime(2012, 10, 19, 8, 10); # 8:10am
         obs_next = job.next_time(now)
 

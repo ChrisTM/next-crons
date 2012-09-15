@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from fieldparsers import Parse
 
 class CronJob(object):
+    """Create a cronjob from a cronjob string"""
     def __init__(self, line):
         # matches five fields separated by whitespace and then everything else
         # (the command)
@@ -23,34 +24,21 @@ class CronJob(object):
 
         self.command = match.group(6)
 
-    """
-    Return True if the month, day/weekday, and hour fields in `dt` matches
-    this cronjob.
-    """
-    def matches(self, dt):
-        return (
-            dt.minute in self.minutes and
-            dt.hour in self.hours and
-            dt.day in self.days_of_month and
-            dt.month in self.months and
-            # isoweekday uses 1-7 (mon-sun), but cron uses 0-6 (sun-sat)
-            dt.isoweekday() % 6 in self.days_of_week
-        )
-
 
     """
-    Return the datetime object for when this cronjob will next fire
+    Return the datetime object for when this cronjob will next fire.
 
-    Approach: we'll use a greedy brute-force approach. We start with a time
-    value set to `now`, then repeatedly increment the time with the largest
-    steps we can (month, day, hour, then minute) until we get a
-    match with the job. This approach is simple and not too slow, taking at
-    most ~12+31+24+60 = 127 steps and checks.
+    Optionally set `now` to whatever datetime.datetime object you want.
     """
     def next_time(self, now=None):
+    # Approach: we'll use a greedy brute-force approach. We start with a time
+    # value set to `now`, then repeatedly increment the time with the largest
+    # steps we can (month, day, hour, then minute) until we get a match with
+    # the job. This approach is simple and not too slow, taking at most
+    # ~12+31+24+60 = 127 steps and checks.
         time = now or datetime.now()
-        # now shouldn't actually count as a /next/ time, so we bump it forward
-        # to prevent now from being returned
+        # now shouldn't count as a /next/ time, so we bump it forward to
+        # prevent it from being returned.
         time = step_minute(time)
         while True:
             if time.month not in self.months:

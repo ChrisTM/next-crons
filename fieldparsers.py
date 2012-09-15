@@ -1,3 +1,5 @@
+"""Classes for parsing each of the five time fields in a cronjob"""
+
 import re
 
 

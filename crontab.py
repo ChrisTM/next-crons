@@ -3,7 +3,7 @@ from datetime import datetime
 
 from cronjob import CronJob
 
-
+"""Represents a collection of cronjobs, AKA cron table or crontab."""
 class CronTab(object):
     def __init__(self, lines):
         self.jobs = []
@@ -24,6 +24,7 @@ class CronTab(object):
         deltas = [time - now for time in times]
 
         zipped = zip(jobs, times, deltas)
+        # sort by time
         zipped.sort(key=lambda x: x[1])
 
         for job, time, delta in zipped:
@@ -31,17 +32,3 @@ class CronTab(object):
             print "({0} from now)".format(delta)
             print "    " + job.command
             print
-
-
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) != 2:
-        sys.__stderr__.write("{0}: Usage: {0} filename\n"
-                .format(sys.argv[0]))
-        sys.exit(-1)
-    filename = sys.argv[1]
-    
-    file_ = open(filename)
-    crontab = CronTab(file_)
-    file_.close()
-    crontab.print_next_times()
