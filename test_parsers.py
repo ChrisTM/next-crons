@@ -5,6 +5,9 @@ class TestGenericParser(unittest.TestCase):
     def setUp(self):
         self.parser = GenericParser()
 
+
+    # test is_ methods
+
     def test_is_all(self):
         self.assertTrue(self.parser.is_all('*'))
         self.assertFalse(self.parser.is_all('*3'))
@@ -24,3 +27,35 @@ class TestGenericParser(unittest.TestCase):
     def test_is_skip(self):
         self.assertTrue(self.parser.is_skip('3-9/2'))
         self.assertFalse(self.parser.is_skip('3-9'))
+
+
+    # test parse_ methods
+
+    def test_parse_all(self):
+        self.assertRaises(SyntaxError, lambda: self.parser.parse_all('*'))
+
+    def test_parse_single(self):
+        exp = [5]
+        obs = self.parser.parse_single('5')
+        self.assertEqual(exp, obs)
+
+    def test_parse_range(self):
+        exp = [5,6,7,8]
+        obs = self.parser.parse_range('5-8')
+        self.assertEqual(exp, obs)
+
+    def test_parse_skip(self):
+        exp = [5,6,7,8]
+        obs = self.parser.parse_skip('5-8/1')
+        self.assertEqual(exp, obs)
+
+        exp = [2, 4, 6, 8, 10]
+        obs = self.parser.parse_skip('2-10/2')
+        self.assertEqual(exp, obs)
+
+        exp = [4, 7, 10, 13]
+        obs = self.parser.parse_skip('4-14/3')
+        self.assertEqual(exp, obs)
+
+        obs_fn = lambda: self.parser.parse_skip('*/2');
+        self.assertRaises(SyntaxError, obs_fn)

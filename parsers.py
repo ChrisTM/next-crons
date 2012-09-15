@@ -33,11 +33,11 @@ class GenericParser(object):
         vals = set();
         for exp in exps:
             tests_and_parsers = [
-                [is_all, parse_all],
-                # since skip expressions may contain ranges, we check this before ranges
-                [is_skip, parse_skip],
-                [is_range, parse_range],
-                [is_single, parse_single],
+                [self.is_all, self.parse_all],
+                #since skip expressions may contain ranges, we check this before ranges
+                [self.is_skip, self.parse_skip],
+                [self.is_range, self.parse_range],
+                [self.is_single, self.parse_single],
             ]
 
             for is_type, parse_type in tests_and_parsers:
@@ -54,7 +54,10 @@ class GenericParser(object):
 
     """Return list of values matched by `exp`"""
     def parse_all(self, exp):
-        return self.allowed_vals
+        if isinstance(self.allowed_vals, AllValues):
+            raise SyntaxError("This field does not support use of '*'")
+        else:
+            return self.allowed_vals
 
 
     """Return True if `exp` a range-type expression. Does not check bounds."""
@@ -82,15 +85,15 @@ class GenericParser(object):
         skip_num = int(skip_num)
 
         vals = []
-        if is_all(sub_exp):
-            vals = parse_all(sub_exp)
-        elif is_range(sub_exp):
-            vals = parse_range(sub_exp)
+        if self.is_all(sub_exp):
+            vals = self.parse_all(sub_exp)
+        elif self.is_range(sub_exp):
+            vals = self.parse_range(sub_exp)
         else:
             raise SyntaxError("LHS of skip expression {0} is invalid" % (exp))
 
         # return `vals`, skipping every `skip_num`-indexed value
-        return [val for idx, val in enumerate(vals) if idx % rhs == 0]
+        return [val for idx, val in enumerate(vals) if idx % skip_num == 0]
 
 
     """Return True if `exp` a single-number expression. Does not check bounds."""
@@ -100,7 +103,7 @@ class GenericParser(object):
     """Return list of the single value matched by the number `exp`"""
     def parse_single(self, exp):
         assert (int(exp) in self.allowed_vals)
-        return int(exp)
+        return [int(exp)]
 
 
 
