@@ -22,9 +22,9 @@ class GenericParser(object):
     _min = None
     _max = None
 
-    # mapping of lowercase alphabetical aliases to their integer meaning.
+    # mapping of lowercase alphabetical names to their integer meaning.
     # Eg: {..., 'feb': 2, ...}
-    aliases = {}
+    names = {}
 
     # list of all allowed values for this field
     allowed_vals = AllValues()
@@ -115,19 +115,19 @@ class GenericParser(object):
         return [self.parse_number(exp)]
 
     """
-    Given a fragment representing a number (either as an alphanumeric alias or
+    Given a fragment representing a number (either as an alphanumeric name or
     otherwise), return the matching integer. This is not a field expression
     parser, but a parser for the parts of an expression that represent a
     number.
     """
     def parse_number(self, num_exp):
         lowered = num_exp.lower()
-        if lowered in self.aliases:
-            return self.aliases[lowered]
+        if lowered in self.names:
+            return self.names[lowered]
         try:
             return int(num_exp)
         except ValueError:
-            raise ValueError('{0} is not a valid number or number alias' % (num_exp))
+            raise ValueError('{0} is not a valid number or name' % (num_exp))
 
 
 class MinutesParser(GenericParser):
@@ -145,7 +145,7 @@ class DaysOfMonthParser(GenericParser):
 class MonthsParser(GenericParser):
     _min = 1
     _max = 12
-    aliases = { 
+    names = { 
         'jan': 1,
         'feb': 2,
         'mar': 3,
@@ -163,7 +163,7 @@ class MonthsParser(GenericParser):
 class DaysOfWeekParser(GenericParser):
     _min = 0
     _max = 6
-    aliases = { 
+    names = { 
         'sun': 0,
         'mon': 1,
         'tue': 2,
