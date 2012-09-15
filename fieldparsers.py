@@ -75,7 +75,7 @@ class GenericParser(object):
     """Return list of values matched by `exp`"""
     def parse_range(self, exp):
         _min, _max = map(self.parse_number, exp.split('-'));
-        assert (_min in self.allowed_vals and _max + 1 in self.allowed_vals)
+        assert (_min in self.allowed_vals and _max in self.allowed_vals)
         assert (_min <= _max)
         return range(_min, _max + 1)
 
@@ -127,7 +127,6 @@ class GenericParser(object):
         try:
             return int(num_exp)
         except ValueError:
-            print num_exp
             raise ValueError('{0} is not a valid number or name'.format(num_exp))
 
 

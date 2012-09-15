@@ -32,7 +32,7 @@ def step_day(dt):
 
 def step_hour(dt):
     dt += timedelta(hours=1)
-    dt = dt.replace(minutes=0)
+    dt = dt.replace(minute=0)
     return dt
 
 def step_minute(dt):
