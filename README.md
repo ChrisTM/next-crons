@@ -25,9 +25,11 @@ What cron standard does this follow?
 ISC Cron V4.1. See [the manpage](http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5) for details.
 
 Some things however, are unsupported:
+
   * nicknames like @weekly
 
 Some non standard things are incidentally supported:
+  
   * named ranges like `mon-wed` or `apr-aug`.
 
 
