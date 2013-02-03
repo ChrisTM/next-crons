@@ -28,7 +28,7 @@ class CronTab(object):
         zipped.sort(key=lambda x: x[1])
 
         for job, time, delta in zipped:
-            print time.strftime("%b %d, %Y at %I:%M %p")
-            print "({0} from now)".format(delta)
+            print time.strftime("%b %d, %Y at %I:%M %p") + " ({0} from now)".format(delta)
+            print
             print "    " + job.command
             print
