@@ -3,22 +3,22 @@
 import re
 
 
-"""
-The parsers use membership testing against the class variable `allowed_vals`
-to ensure field values are within appropriate bounds. This is default value for
-`allowed_vals` will allow any value
-"""
 class AllValues(object):
+    """
+    The parsers use membership testing against the class variable
+    `allowed_vals` to ensure field values are within appropriate bounds. This
+    is default value for `allowed_vals` will allow any value
+    """
     def __contains__(self, item):
         return True
 
 
-"""
-Generic parser for parsing cron job fields. The parse method takes a field
-string and expands it into a list of numbers that are matched by the field.
-Example: .parse("2-4,9") -> [2,3,4,9].
-"""
 class GenericParser(object):
+    """
+    Generic parser for parsing cron job fields. The parse method takes a field
+    string and expands it into a list of numbers that are matched by the field.
+    Example: .parse("2-4,9") -> [2,3,4,9].
+    """
     # if `_min` and `_max` are specified, they will be used to determine the
     # `allowed_vals`
     _min = None
@@ -35,8 +35,8 @@ class GenericParser(object):
         if None not in (self._min, self._max):
             self.allowed_vals = range(self._min, self._max + 1)
 
-    """Parse a field, returning a list of values allowed by the field"""
     def parse(self, field):
+        """Parse a field, returning a list of values allowed by the field"""
         # a cron field is made up of multiple comma separated expressions.
         exps = field.split(',');
         # the values this field allows will be collected here
@@ -57,40 +57,39 @@ class GenericParser(object):
 
         return sorted(vals)
 
-
-    """Return True if `exp` is '*'. Does not check bounds."""
     def is_all(self, exp):
+        """Return True if `exp` is '*'. Does not check bounds."""
         return exp == '*'
 
-    """Return list of values matched by `*`"""
     def parse_all(self, exp):
+        """Return list of values matched by `*`"""
         if isinstance(self.allowed_vals, AllValues):
             raise SyntaxError("This field does not support use of '*'")
         else:
             return self.allowed_vals
 
 
-    """Return True if `exp` is a range-type expression. Does not check bounds."""
     def is_range(self, exp):
+        """Return True if `exp` is a range-type expression. Does not check bounds."""
         return re.match(r'^(\w+)-(\w+)$', exp) is not None;
 
-    """Return list of values matched by `exp`"""
     def parse_range(self, exp):
+        """Return list of values matched by `exp`"""
         _min, _max = map(self.parse_number, exp.split('-'));
         assert (_min in self.allowed_vals and _max in self.allowed_vals)
         assert (_min <= _max)
         return range(_min, _max + 1)
 
 
-    """
-    Return True if `exp` a skip-type expression. Does not check bounds or
-    ensure the LHS of '/' is a valid expression itself.
-    """
     def is_skip(self, exp):
+        """
+        Return True if `exp` a skip-type expression. Does not check bounds or
+        ensure the LHS of '/' is a valid expression itself.
+        """
         return re.match(r'^(.*)/(\d+)$', exp) is not None;
 
-    """Return list of values matched by `exp`"""
     def parse_skip(self, exp):
+        """Return list of values matched by `exp`"""
         sub_exp, skip_num = exp.split('/');
 
         skip_num = int(skip_num)
@@ -107,22 +106,22 @@ class GenericParser(object):
         return [val for idx, val in enumerate(vals) if idx % skip_num == 0]
 
 
-    """Return True if `exp` a single-number expression. Does not check bounds."""
     def is_single(self, exp):
+        """Return True if `exp` a single-number expression. Does not check bounds."""
         return re.match(r'^(\w+)$', exp) is not None;
 
-    """Return list of the single value matched by the number `exp`"""
     def parse_single(self, exp):
+        """Return list of the single value matched by the number `exp`"""
         assert (self.parse_number(exp) in self.allowed_vals)
         return [self.parse_number(exp)]
 
-    """
-    Given a fragment representing a number (either as an alphanumeric name or
-    otherwise), return the matching integer. This is not a field expression
-    parser, but a parser for the parts of an expression that represent a
-    number.
-    """
     def parse_number(self, num_exp):
+        """
+        Given a fragment representing a number (either as an alphanumeric name
+        or otherwise), return the matching integer. This is not a field
+        expression parser, but a parser for the parts of an expression that
+        represent a number.
+        """
         lowered = num_exp.lower()
         if lowered in self.names:
             return self.names[lowered]
@@ -177,8 +176,8 @@ class DaysOfWeekParser(GenericParser):
     }
 
 
-"""A convienence class that namespaces instances of the typed parsers"""
 class Parse:
+    """A convienence class that namespaces instances of the typed parsers"""
     minutes = MinutesParser().parse
     hours = HoursParser().parse
     days_of_month = DaysOfMonthParser().parse

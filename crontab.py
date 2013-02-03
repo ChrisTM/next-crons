@@ -3,8 +3,8 @@ from datetime import datetime
 
 from cronjob import CronJob
 
-"""Represents a collection of cronjobs, AKA cron table or crontab."""
 class CronTab(object):
+    """Represents a collection of cronjobs, AKA cron table or crontab."""
     def __init__(self, lines):
         self.jobs = []
 

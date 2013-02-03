@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from fieldparsers import Parse
 
 class CronJob(object):
-    """Create a cronjob from a cronjob string"""
     def __init__(self, line):
+        """Create a cronjob from a cronjob string"""
         # matches five fields separated by whitespace and then everything else
         # (the command)
         field = r'([\w\d,*/-]+)' # one or more alpha, digit, *, /, -
@@ -25,17 +25,17 @@ class CronJob(object):
         self.command = match.group(6)
 
 
-    """
-    Return the datetime object for when this cronjob will next fire.
-
-    Optionally set `now` to whatever datetime.datetime object you want.
-    """
     def next_time(self, now=None):
-    # Approach: we'll use a greedy brute-force approach. We start with a time
-    # value set to `now`, then repeatedly increment the time with the largest
-    # steps we can (month, day, hour, then minute) until we get a match with
-    # the job. This approach is simple and not too slow, taking at most
-    # ~12+31+24+60 = 127 steps and checks.
+        """
+        Return the datetime object for when this cronjob will next fire.
+
+        Optionally set `now` to whatever datetime.datetime object you want.
+        """
+        # Approach: we'll use a greedy brute-force approach. We start with a
+        # time value set to `now`, then repeatedly increment the time with the
+        # largest steps we can (month, day, hour, then minute) until we get a
+        # match with the job. This approach is simple and not too slow, taking
+        # at most ~12+31+24+60 = 127 steps and checks.
         time = now or datetime.now()
         # now shouldn't count as a /next/ time, so we bump it forward to
         # prevent it from being returned.
@@ -59,11 +59,11 @@ class CronJob(object):
             break
         return time
 
-    """
-    Return a generator of datetimes corresponding to the next times this job
-    will fire
-    """
     def next_times(self, now=None):
+        """
+        Return a generator of datetimes corresponding to the next times this
+        job will fire
+        """
         while True:
             now = self.next_time(now)
             yield now
